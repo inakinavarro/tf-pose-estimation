@@ -32,6 +32,11 @@ def get_network(type, placeholder_input, sess_for_load=None, trainable=True):
         pretrain_path = 'pretrained/mobilenet_v1_0.75_224_2017_06_14/mobilenet_v1_0.75_224.ckpt'
         last_layer = 'MConv_Stage6_L{aux}_5'
 
+    elif type == 'new_mobilenet_thin':
+        net = MobilenetNetworkThin({'image': placeholder_input}, conv_width=0.75, conv_width2=0.50, trainable=trainable)
+        pretrain_path = 'pretrained/mobilenet_v1_0.75_224_2017_06_14/mobilenet_v1_0.75_224.ckpt'
+        last_layer = 'MConv_Stage6_L{aux}_5'
+
     elif type == 'cmu':
         net = CmuNetwork({'image': placeholder_input}, trainable=trainable)
         pretrain_path = 'numpy/openpose_coco.npy'
@@ -54,6 +59,7 @@ def get_network(type, placeholder_input, sess_for_load=None, trainable=True):
             ckpts = {
                 'mobilenet': 'trained/mobilenet_%s/model-246038' % s,
                 'mobilenet_thin': 'trained/mobilenet_thin_%s/model-449003' % s,
+                'new_mobilenet_thin': '/home/navarro/data/learningmodels_local/tensorflow/mobilepose/models/mobilenet_thin_batch:32_lr:0.001_gpus:4_368x368_/model-80000',
                 'mobilenet_fast': 'trained/mobilenet_fast_%s/model-189000' % s,
                 'mobilenet_accurate': 'trained/mobilenet_accurate/model-170000'
             }
@@ -70,7 +76,8 @@ def get_network(type, placeholder_input, sess_for_load=None, trainable=True):
 def get_graph_path(model_name):
     dyn_graph_path = {
         'cmu': './models/graph/cmu/graph_opt.pb',
-        'mobilenet_thin': './models/graph/mobilenet_thin/graph_opt.pb'
+        'mobilenet_thin': './models/graph/mobilenet_thin/graph_opt.pb',
+        'new_mobilenet_thin' : './models/graph/new_mobilenet_thin/new_opt_frozen.pb'
     }
     graph_path = dyn_graph_path[model_name]
     for path in (graph_path, os.path.join(os.path.dirname(os.path.abspath(__file__)), graph_path), os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', graph_path)):
